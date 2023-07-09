@@ -79,10 +79,12 @@ import { Dagger } from "https://deno.land/x/flutter_pipeline/mod.ts";
 
 const { codeQuality, test } = Dagger;
 
-export default function pipeline(src = ".") {
+function pipeline(src = ".") {
   connect(async (client: Client) => {
     await codeQuality(client, src);
     await test(client, src);
   });
 }
+
+pipeline();
 ```
