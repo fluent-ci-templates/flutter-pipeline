@@ -8,6 +8,7 @@ export enum Job {
 
 const FLUTTER_VERSION = Deno.env.get("FLUTTER_VERSION") || "3.13.1";
 const exclude = [
+  "build",
   "android/app/build",
   "android/.gradle",
   ".devbox",
@@ -79,6 +80,11 @@ export const build = async (client: Client, src = ".") => {
     .container()
     .from(`ghcr.io/cirruslabs/flutter:${FLUTTER_VERSION}`)
     .withMountedCache("/root/.pub-cache", client.cacheVolume("pub-cache"))
+    .withMountedCache(
+      "/app/android/.gradle",
+      client.cacheVolume("android-gradle")
+    )
+    .withMountedCache("/app/build", client.cacheVolume("android-build"))
     .withDirectory("/app", context, {
       exclude,
     })

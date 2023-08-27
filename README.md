@@ -33,7 +33,7 @@ dagger run fluentci .
 | Variable            | Description            | Default  |
 | ------------------- | ---------------------- | -------- |
 | `FLUTTER_VERSION`   | Flutter version to use | `3.13.1` |
-| `BUILD_OUTPUT_TYPE` | Build output type (`aar`, `apk`, `appBundle`, `bundle`, `linux`, `web`)      | `apk`    |
+| `BUILD_OUTPUT_TYPE` | Build output type (`aar`, `apk`, `appbundle`, `bundle`, `linux`, `web`)      | `apk`    |
 
 
 ## Jobs
