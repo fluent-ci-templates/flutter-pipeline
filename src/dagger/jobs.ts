@@ -1,4 +1,4 @@
-import Client from "@dagger.io/dagger";
+import { Client } from "@dagger.io/dagger";
 
 export enum Job {
   codeQuality = "codeQuality",
@@ -20,16 +20,17 @@ export const codeQuality = async (client: Client, src = ".") => {
     .pipeline(Job.test)
     .container()
     .from(`ghcr.io/cirruslabs/flutter:${FLUTTER_VERSION}`)
+    .withMountedCache("/root/.pub-cache", client.cacheVolume("pub-cache"))
+    .withEnvVariable("PATH", "$PATH:$HOME/.pub-cache/bin", { expand: true })
+    .withExec(["flutter", "pub", "global", "activate", "dart_code_metrics"])
     .withDirectory("/app", context, {
       exclude,
     })
     .withWorkdir("/app")
-    .withExec(["flutter", "pub", "global", "activate", "dart_code_metrics"])
-    .withEnvVariable("PATH", "$PATH:$HOME/.pub-cache/bin", { expand: true })
     .withExec([
       "sh",
       "-c",
-      "dart run dart_code_metrics:metrics lib -r codeclimate  > gl-code-quality-report.json",
+      "$HOME/.pub-cache/bin/metrics lib -r codeclimate  > gl-code-quality-report.json",
     ]);
 
   await ctr
@@ -47,16 +48,17 @@ export const test = async (client: Client, src = ".") => {
     .pipeline(Job.test)
     .container()
     .from(`ghcr.io/cirruslabs/flutter:${FLUTTER_VERSION}`)
+    .withMountedCache("/root/.pub-cache", client.cacheVolume("pub-cache"))
+    .withEnvVariable("PATH", "$PATH:$HOME/.pub-cache/bin", { expand: true })
+    .withExec(["flutter", "pub", "global", "activate", "junitreport"])
     .withDirectory("/app", context, {
       exclude,
     })
     .withWorkdir("/app")
-    .withExec(["flutter", "pub", "global", "activate", "junitreport"])
-    .withEnvVariable("PATH", "$PATH:$HOME/.pub-cache/bin", { expand: true })
     .withExec([
       "sh",
       "-c",
-      "flutter test --machine --coverage | tojunit -o report.xml",
+      "flutter test --machine --coverage | $HOME/.pub-cache/bin/tojunit -o report.xml",
     ])
     .withExec(["sh", "-c", "lcov --summary coverage/lcov.info"])
     .withExec(["sh", "-c", "genhtml coverage/lcov.info --output=coverage"]);
@@ -76,6 +78,7 @@ export const build = async (client: Client, src = ".") => {
     .pipeline(Job.build)
     .container()
     .from(`ghcr.io/cirruslabs/flutter:${FLUTTER_VERSION}`)
+    .withMountedCache("/root/.pub-cache", client.cacheVolume("pub-cache"))
     .withDirectory("/app", context, {
       exclude,
     })

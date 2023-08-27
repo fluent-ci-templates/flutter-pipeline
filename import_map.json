@@ -1,6 +1,6 @@
 {
   "imports": {
-    "@dagger.io/dagger": "https://esm.sh/v128/*@dagger.io/dagger@0.6.3",
+    "@dagger.io/dagger": "https://esm.sh/v128/*@dagger.io/dagger@0.8.1",
     "fluent_gitlab_ci": "https://deno.land/x/fluent_gitlab_ci@v0.4.2/mod.ts",
     "fluent_github_actions": "https://deno.land/x/fluent_github_actions@v0.2.1/mod.ts",
     "fluent_circleci": "https://deno.land/x/fluent_circleci@v0.2.4/mod.ts",

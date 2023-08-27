@@ -1,4 +1,4 @@
-import Client, { connect } from "@dagger.io/dagger";
+import { Client, connect } from "@dagger.io/dagger";
 import * as jobs from "./jobs.ts";
 
 const { codeQuality, test, build, runnableJobs } = jobs;
