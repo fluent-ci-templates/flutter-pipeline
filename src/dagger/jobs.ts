@@ -6,7 +6,7 @@ export enum Job {
   build = "build",
 }
 
-const FLUTTER_VERSION = Deno.env.get("FLUTTER_VERSION") || "3.10.3";
+const FLUTTER_VERSION = Deno.env.get("FLUTTER_VERSION") || "3.13.1";
 const exclude = [
   "android/app/build",
   "android/.gradle",
