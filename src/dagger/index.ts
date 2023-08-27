@@ -1,4 +1,4 @@
 import pipeline from "./pipeline.ts";
-import { codeQuality, test } from "./jobs.ts";
+import { hello } from "./jobs.ts";
 
-export { pipeline, codeQuality, test };
+export { pipeline, hello };
