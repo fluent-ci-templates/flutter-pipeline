@@ -29,7 +29,7 @@ export const codeQuality = async (client: Client, src = ".") => {
     .withExec([
       "sh",
       "-c",
-      "metrics lib -r codeclimate  > gl-code-quality-report.json",
+      "dart run dart_code_metrics:metrics lib -r codeclimate  > gl-code-quality-report.json",
     ]);
 
   await ctr
