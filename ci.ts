@@ -1,12 +1,16 @@
-const command = new Deno.Command(Deno.execPath(), {
-  args: [
-    "run",
-    "-A",
-    "--import-map=https://deno.land/x/flutter_pipeline/import_map.json",
-    "https://deno.land/x/flutter_pipeline/src/dagger/runner.ts",
-  ],
-});
+import Client, { connect } from "https://sdk.fluentci.io/v0.1.9/mod.ts";
+import {
+  codeQuality,
+  test,
+  build,
+} from "https://pkg.fluentci.io/flutter_pipeline@v0.4.1/mod.ts";
 
-const { stdout } = await command.output();
+function pipeline(src = ".") {
+  connect(async (client: Client) => {
+    await codeQuality(client, src);
+    await test(client, src);
+    await build(client, src);
+  });
+}
 
-console.log(new TextDecoder().decode(stdout));
+pipeline();
