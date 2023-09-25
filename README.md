@@ -12,7 +12,7 @@ A ready-to-use Pipeline for your [Flutter](https://flutter.dev/) projects.
 Run the following command in your project:
 
 ```bash
-dagger run fluentci flutter_pipeline
+fluentci run flutter_pipeline
 ```
 
 Or, if you want to use it as a template:
@@ -26,7 +26,7 @@ This will create a `.fluentci` folder in your project.
 Now you can run the pipeline with:
 
 ```bash
-dagger run fluentci .
+fluentci run .
 ```
 
 ## Environment variables
