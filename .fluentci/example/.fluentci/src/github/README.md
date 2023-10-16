@@ -1,7 +1,7 @@
 # Github Actions
 
 [![deno module](https://shield.deno.dev/x/deno_pipeline)](https://deno.land/x/deno_pipeline)
-![deno compatibility](https://shield.deno.dev/deno/^1.34)
+![deno compatibility](https://shield.deno.dev/deno/^1.37)
 [![](https://img.shields.io/codecov/c/gh/fluent-ci-templates/deno-pipeline)](https://codecov.io/gh/fluent-ci-templates/deno-pipeline)
 
 The following command will generate a `.github/workflows/ci.yml` file in your project:
@@ -33,7 +33,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: denoland/setup-deno@v1
         with:
-          deno-version: v1.36
+          deno-version: v1.37
       - name: Setup Fluent CI CLI
         run: deno install -A -r https://cli.fluentci.io -n fluentci
       - name: Setup Dagger
