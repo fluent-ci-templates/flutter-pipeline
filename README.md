@@ -45,6 +45,13 @@ fluentci run .
 | test         | Run tests               |
 | build        | Build release           |
 
+
+```graphql
+build(src: String!): String
+codeQuality(src: String!): String
+test(src: String!): String
+```
+
 ## Programmatic usage
 
 You can also use this pipeline programmatically:
