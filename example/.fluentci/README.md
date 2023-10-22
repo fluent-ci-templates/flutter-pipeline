@@ -12,7 +12,7 @@ A ready-to-use Pipeline for your [Flutter](https://flutter.dev/) projects.
 Run the following command in your project:
 
 ```bash
-dagger run fluentci flutter_pipeline
+fluentci run flutter_pipeline
 ```
 
 Or, if you want to use it as a template:
@@ -26,7 +26,7 @@ This will create a `.fluentci` folder in your project.
 Now you can run the pipeline with:
 
 ```bash
-dagger run fluentci .
+fluentci run .
 ```
 
 ## Environment variables
@@ -50,16 +50,9 @@ dagger run fluentci .
 You can also use this pipeline programmatically:
 
 ```ts
-import Client, { connect } from "https://sdk.fluentci.io/v0.1.7/mod.ts";
-import { codeQuality, test, build } from "https://pkg.fluentci.io/flutter_pipeline@v0.4.0/mod.ts";
+import { codeQuality, test, build } from "https://pkg.fluentci.io/flutter_pipeline@v0.5.0/mod.ts";
 
-function pipeline(src = ".") {
-  connect(async (client: Client) => {
-    await codeQuality(client, src);
-    await test(client, src);
-    await build(client, src);
-  });
-}
-
-pipeline();
+await codeQuality();
+await test();
+await build();
 ```
