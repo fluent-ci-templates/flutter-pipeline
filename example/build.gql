@@ -1,5 +1,7 @@
 {
   flutter {
-    build(src: ".")
+    build(src: ".") {
+      id
+    }
   }
 }

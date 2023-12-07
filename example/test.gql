@@ -1,5 +1,7 @@
 {
   flutter {
-    test(src: ".")
+    test(src: ".") {
+      id
+    }
   }
 }

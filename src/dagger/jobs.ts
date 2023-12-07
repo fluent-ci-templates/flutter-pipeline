@@ -1,4 +1,7 @@
-import Client, { connect } from "../../deps.ts";
+import { Directory, File } from "../../deps.ts";
+import { Client } from "../../sdk/client.gen.ts";
+import { connect } from "../../sdk/connect.ts";
+import { getDirectory } from "./lib.ts";
 
 export enum Job {
   codeQuality = "codeQuality",
@@ -6,7 +9,6 @@ export enum Job {
   build = "build",
 }
 
-const FLUTTER_VERSION = Deno.env.get("FLUTTER_VERSION") || "3.13.1";
 export const exclude = [
   "build",
   "android/app/build",
@@ -15,11 +17,23 @@ export const exclude = [
   ".fluentci",
 ];
 
-export const codeQuality = async (src = ".") => {
+/**
+ * @function
+ * @description Run code quality checks
+ * @param {string | Directory | undefined} src
+ * @param {string} flutterVersion
+ * @returns {Promise<File | string>}
+ */
+export async function codeQuality(
+  src: string | Directory | undefined = ".",
+  flutterVersion: string | undefined = "3.13.1"
+): Promise<File | string> {
+  let id = "";
   await connect(async (client: Client) => {
-    const context = client.host().directory(src);
+    const context = getDirectory(client, src);
+    const FLUTTER_VERSION = Deno.env.get("FLUTTER_VERSION") || flutterVersion;
     const ctr = client
-      .pipeline(Job.test)
+      .pipeline(Job.codeQuality)
       .container()
       .from(`ghcr.io/cirruslabs/flutter:${FLUTTER_VERSION}`)
       .withMountedCache("/root/.pub-cache", client.cacheVolume("pub-cache"))
@@ -39,16 +53,28 @@ export const codeQuality = async (src = ".") => {
       .file("/app/gl-code-quality-report.json")
       .export("./gl-code-quality-report.json");
 
-    const result = await ctr.stdout();
+    await ctr.stdout();
 
-    console.log(result);
+    id = await ctr.file("/app/gl-code-quality-report.json").id();
   });
-  return "done";
-};
+  return id;
+}
 
-export const test = async (src = ".") => {
+/**
+ * @function
+ * @description Run tests
+ * @param {string | Directory | undefined} src
+ * @param {string} flutterVersion
+ * @returns {Promise<Directory | string>}
+ */
+export async function test(
+  src: string | Directory | undefined = ".",
+  flutterVersion: string | undefined = "3.13.1"
+): Promise<Directory | string> {
+  let id = "";
   await connect(async (client: Client) => {
-    const context = client.host().directory(src);
+    const context = getDirectory(client, src);
+    const FLUTTER_VERSION = Deno.env.get("FLUTTER_VERSION") || flutterVersion;
     const ctr = client
       .pipeline(Job.test)
       .container()
@@ -71,17 +97,39 @@ export const test = async (src = ".") => {
     await ctr.file("/app/report.xml").export("./report.xml");
     await ctr.directory("/app/coverage").export("./coverage");
 
-    const result = await ctr.stdout();
-
-    console.log(result);
+    await ctr.stdout();
+    id = await ctr.directory("/app/coverage").id();
   });
-  return "done";
-};
+  return id;
+}
 
-export const build = async (src = ".") => {
+/**
+ * @function
+ * @description Build the application
+ * @param {string | Directory | undefined} src
+ * @param {string} buildType
+ * @param {boolean} release
+ * @param {string} flutterVersion
+ * @returns {Promise<File | string>}
+ */
+export async function build(
+  src: Directory | string | undefined = ".",
+  buildType?: string,
+  release = true,
+  flutterVersion: string | undefined = "3.13.1"
+): Promise<File | string> {
+  let id = "";
   await connect(async (client: Client) => {
-    const context = client.host().directory(src);
-    const BUILD_OUTPUT_TYPE = Deno.env.get("BUILD_OUTPUT_TYPE") || "apk";
+    const context = getDirectory(client, src);
+    const FLUTTER_VERSION = Deno.env.get("FLUTTER_VERSION") || flutterVersion;
+    const BUILD_OUTPUT_TYPE =
+      Deno.env.get("BUILD_OUTPUT_TYPE") || buildType || "apk";
+    const args = [];
+
+    if (release) {
+      args.push("--release");
+    }
+
     const ctr = client
       .pipeline(Job.build)
       .container()
@@ -96,23 +144,26 @@ export const build = async (src = ".") => {
         exclude,
       })
       .withWorkdir("/app")
-      .withExec(["flutter", "build", BUILD_OUTPUT_TYPE]);
+      .withExec(["flutter", "build", BUILD_OUTPUT_TYPE, ...args])
+      .withExec(["cp", "-r", "build/app/outputs", "/outputs"]);
 
-    const result = await ctr.stdout();
-
-    console.log(result);
+    await ctr.stdout();
+    id = await ctr
+      .file(
+        `/outputs/${BUILD_OUTPUT_TYPE === "apk" ? "apk" : "bundle"}/${
+          release ? "release" : "debug"
+        }/app-${release ? "release" : "debug"}.${
+          BUILD_OUTPUT_TYPE === "apk" ? "apk" : "aab"
+        }`
+      )
+      .id();
   });
-  return "done";
-};
+  return id;
+}
 
-export type JobExec = (src?: string) =>
-  | Promise<string>
-  | ((
-      src?: string,
-      options?: {
-        ignore: string[];
-      }
-    ) => Promise<string>);
+export type JobExec = (
+  src?: string | Directory
+) => Promise<File | Directory | string>;
 
 export const runnableJobs: Record<Job, JobExec> = {
   [Job.codeQuality]: codeQuality,

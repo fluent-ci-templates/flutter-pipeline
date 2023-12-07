@@ -29,6 +29,15 @@ Now you can run the pipeline with:
 fluentci run .
 ```
 
+
+## Dagger Module
+
+Use as a [Dagger](https://dagger.io) module:
+
+```bash
+dagger mod install github.com/fluent-ci-templates/flutter-pipeline@mod
+```
+
 ## Environment variables
 
 | Variable            | Description            | Default  |
@@ -46,10 +55,20 @@ fluentci run .
 | build        | Build release           |
 
 
-```graphql
-build(src: String!): String
-codeQuality(src: String!): String
-test(src: String!): String
+```typescript
+codeQuality(
+  src: string | Directory = ".",
+  flutterVersion: string = "3.13.1"
+): Promise<File | string>
+test(
+  src?: string | Directory = ".",
+  flutterVersion?: string = "3.13.1"
+): Promise<Directory | string> 
+build(
+  src?: string | Directory  = ".",
+  flutterVersion?: string = "3.13.1",
+  buildOutputType?: string = "apk"
+): Promise<Directory | string>
 ```
 
 ## Programmatic usage
@@ -57,7 +76,7 @@ test(src: String!): String
 You can also use this pipeline programmatically:
 
 ```ts
-import { codeQuality, test, build } from "https://pkg.fluentci.io/flutter_pipeline@v0.6.0/mod.ts";
+import { codeQuality, test, build } from "https://pkg.fluentci.io/flutter_pipeline@v0.7.0/mod.ts";
 
 await codeQuality();
 await test();

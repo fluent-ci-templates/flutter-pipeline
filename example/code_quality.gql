@@ -1,5 +1,7 @@
 {
   flutter {
-    codeQuality(src: ".")
+    codeQuality(src: ".") {
+      id
+    }
   }
 }
