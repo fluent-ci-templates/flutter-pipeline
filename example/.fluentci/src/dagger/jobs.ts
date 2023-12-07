@@ -1,4 +1,4 @@
-import { Directory, File } from "../../deps.ts";
+import { Directory, File, Container } from "../../deps.ts";
 import { Client } from "../../sdk/client.gen.ts";
 import { connect } from "../../sdk/connect.ts";
 import { getDirectory } from "./lib.ts";
@@ -7,6 +7,7 @@ export enum Job {
   codeQuality = "codeQuality",
   test = "test",
   build = "build",
+  dev = "dev",
 }
 
 export const exclude = [
@@ -161,18 +162,56 @@ export async function build(
   return id;
 }
 
+/**
+ * @function
+ * @description Return a Container with Flutter installed
+ * @param {string | Directory | undefined} src
+ * @param {string} flutterVersion
+ * @returns {Promise<File | string>}
+ */
+export async function dev(
+  src: Directory | string | undefined = ".",
+  flutterVersion: string | undefined = "3.13.1"
+): Promise<Container | string> {
+  let id = "";
+  await connect(async (client: Client) => {
+    const context = getDirectory(client, src);
+    const FLUTTER_VERSION = Deno.env.get("FLUTTER_VERSION") || flutterVersion;
+    const ctr = client
+      .pipeline(Job.build)
+      .container()
+      .from(`ghcr.io/cirruslabs/flutter:${FLUTTER_VERSION}`)
+      .withMountedCache("/root/.pub-cache", client.cacheVolume("pub-cache"))
+      .withMountedCache(
+        "/app/android/.gradle",
+        client.cacheVolume("android-gradle")
+      )
+      .withMountedCache("/app/build", client.cacheVolume("android-build"))
+      .withDirectory("/app", context, {
+        exclude,
+      })
+      .withWorkdir("/app");
+
+    await ctr.stdout();
+    id = await ctr.id();
+  });
+  return id;
+}
+
 export type JobExec = (
   src?: string | Directory
-) => Promise<File | Directory | string>;
+) => Promise<File | Directory | Container | string>;
 
 export const runnableJobs: Record<Job, JobExec> = {
   [Job.codeQuality]: codeQuality,
   [Job.test]: test,
   [Job.build]: build,
+  [Job.dev]: dev,
 };
 
 export const jobDescriptions: Record<Job, string> = {
   [Job.codeQuality]: "Run code quality checks",
   [Job.test]: "Run tests",
   [Job.build]: "Build the application",
+  [Job.dev]: "Return a Container with Flutter installed",
 };
