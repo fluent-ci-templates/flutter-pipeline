@@ -20,5 +20,5 @@ jobs:
         run: |
           dagger call code-quality --src .
           dagger call test --src .
-          dagger call build --src .
+          dagger download build --src .
         working-directory: example
