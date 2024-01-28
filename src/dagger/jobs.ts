@@ -154,7 +154,7 @@ export async function build(
  * @description Return a Container with Flutter installed
  * @param {string | Directory | undefined} src
  * @param {string} flutterVersion
- * @returns {Promise<File | string>}
+ * @returns {Promise<Container | string>}
  */
 export async function dev(
   src: Directory | string | undefined = ".",
