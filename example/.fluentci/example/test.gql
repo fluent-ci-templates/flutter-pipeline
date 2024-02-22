@@ -1,5 +1,0 @@
-{
-  flutter {
-    test(src: ".")
-  }
-}

@@ -1,5 +1,0 @@
-{
-  flutter {
-    build(src: ".")
-  }
-}
