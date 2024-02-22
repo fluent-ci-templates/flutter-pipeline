@@ -1,3 +1,8 @@
+/**
+ * @module flutter
+ * @description This module provides a set of functions to buikd and test Flutter applications
+ */
+
 import { Directory, File, Container } from "../../deps.ts";
 import { dag } from "../../sdk/client.gen.ts";
 import { getDirectory } from "./lib.ts";
