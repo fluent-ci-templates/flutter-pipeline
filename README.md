@@ -31,7 +31,7 @@ fluentci run .
 ```
 
 
-## Dagger Module
+## 🧩 Dagger Module
 
 Use as a [Dagger](https://dagger.io) module:
 
@@ -39,7 +39,7 @@ Use as a [Dagger](https://dagger.io) module:
 dagger mod install github.com/fluent-ci-templates/flutter-pipeline@mod
 ```
 
-## Environment variables
+## 🛠️ Environment variables
 
 | Variable            | Description            | Default  |
 | ------------------- | ---------------------- | -------- |
@@ -47,7 +47,7 @@ dagger mod install github.com/fluent-ci-templates/flutter-pipeline@mod
 | `BUILD_OUTPUT_TYPE` | Build output type (`aar`, `apk`, `appbundle`, `bundle`, `linux`, `web`)      | `apk`    |
 
 
-## Jobs
+## ✨ Jobs
 
 | Job          | Description             |
 | ------------ | ----------------------- |
@@ -72,7 +72,7 @@ build(
 ): Promise<Directory | string>
 ```
 
-## Programmatic usage
+## 👨‍💻 Programmatic usage
 
 You can also use this pipeline programmatically:
 
