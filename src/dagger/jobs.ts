@@ -3,8 +3,7 @@
  * @description This module provides a set of functions to build and test Flutter applications
  */
 
-import { Directory, File, Container } from "../../deps.ts";
-import { dag } from "../../sdk/client.gen.ts";
+import { dag, env, Directory, File, Container } from "../../deps.ts";
 import { getDirectory } from "./lib.ts";
 
 export enum Job {
@@ -23,6 +22,8 @@ export const exclude = [
 ];
 
 /**
+ * Run code quality checks
+ *
  * @function
  * @description Run code quality checks
  * @param {string | Directory | undefined} src
@@ -33,8 +34,8 @@ export async function codeQuality(
   src: string | Directory | undefined = ".",
   flutterVersion: string | undefined = "3.13.1"
 ): Promise<File | string> {
-  const context = await getDirectory(dag, src);
-  const FLUTTER_VERSION = Deno.env.get("FLUTTER_VERSION") || flutterVersion;
+  const context = await getDirectory(src);
+  const FLUTTER_VERSION = env.get("FLUTTER_VERSION") || flutterVersion;
   const ctr = dag
     .pipeline(Job.codeQuality)
     .container()
@@ -63,6 +64,8 @@ export async function codeQuality(
 }
 
 /**
+ * Run tests
+ *
  * @function
  * @description Run tests
  * @param {string | Directory | undefined} src
@@ -73,8 +76,8 @@ export async function test(
   src: string | Directory | undefined = ".",
   flutterVersion: string | undefined = "3.13.1"
 ): Promise<Directory | string> {
-  const context = await getDirectory(dag, src);
-  const FLUTTER_VERSION = Deno.env.get("FLUTTER_VERSION") || flutterVersion;
+  const context = await getDirectory(src);
+  const FLUTTER_VERSION = env.get("FLUTTER_VERSION") || flutterVersion;
   const ctr = dag
     .pipeline(Job.test)
     .container()
@@ -103,6 +106,8 @@ export async function test(
 }
 
 /**
+ * Build the application
+ *
  * @function
  * @description Build the application
  * @param {string | Directory | undefined} src
@@ -117,10 +122,9 @@ export async function build(
   release = true,
   flutterVersion: string | undefined = "3.13.1"
 ): Promise<File | string> {
-  const context = await getDirectory(dag, src);
-  const FLUTTER_VERSION = Deno.env.get("FLUTTER_VERSION") || flutterVersion;
-  const BUILD_OUTPUT_TYPE =
-    Deno.env.get("BUILD_OUTPUT_TYPE") || buildType || "apk";
+  const context = await getDirectory(src);
+  const FLUTTER_VERSION = env.get("FLUTTER_VERSION") || flutterVersion;
+  const BUILD_OUTPUT_TYPE = env.get("BUILD_OUTPUT_TYPE") || buildType || "apk";
   const args = [];
 
   if (release) {
@@ -155,6 +159,8 @@ export async function build(
 }
 
 /**
+ * Return a Container with Flutter installed
+ *
  * @function
  * @description Return a Container with Flutter installed
  * @param {string | Directory | undefined} src
@@ -165,8 +171,8 @@ export async function dev(
   src: Directory | string | undefined = ".",
   flutterVersion: string | undefined = "3.13.1"
 ): Promise<Container | string> {
-  const context = await getDirectory(dag, src);
-  const FLUTTER_VERSION = Deno.env.get("FLUTTER_VERSION") || flutterVersion;
+  const context = await getDirectory(src);
+  const FLUTTER_VERSION = env.get("FLUTTER_VERSION") || flutterVersion;
   const ctr = dag
     .pipeline(Job.build)
     .container()

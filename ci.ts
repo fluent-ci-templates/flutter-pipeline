@@ -1,8 +1,4 @@
-import {
-  codeQuality,
-  test,
-  build,
-} from "https://pkg.fluentci.io/flutter_pipeline@v0.7.2/mod.ts";
+import { codeQuality, test, build } from "jsr:@fluentci/flutter";
 
 await codeQuality();
 await test();
