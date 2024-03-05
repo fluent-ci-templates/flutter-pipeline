@@ -15,7 +15,7 @@ jobs:
       - name: Run Dagger Pipelines
         run: |
           fluentci run deno_pipeline fmt test
-          dagger -m github.com/fluent-ci-templates/flutter_pipeline@main functions
+          dagger -m github.com/fluent-ci-templates/flutter-pipeline@main functions
       - name: Upload to Codecov
         run: fluentci run codecov_pipeline
         env:
