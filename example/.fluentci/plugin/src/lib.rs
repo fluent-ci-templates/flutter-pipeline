@@ -43,7 +43,7 @@ pub fn test() -> FnResult<String> {
 
     let stdout = dag()
         .devbox()?
-        .with_exec(vec!["devbox", "global", "add", "lcov"])?
+        .with_exec(vec!["devbox", "global", "add", "lcov@1.15"])?
         .with_exec(vec!["flutter", "pub", "global", "activate", "junitreport"])?
         .with_exec(vec![
             "flutter test --machine --coverage | $HOME/.pub-cache/bin/tojunit -o report.xml",
