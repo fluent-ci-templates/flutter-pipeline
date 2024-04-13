@@ -1,22 +1,18 @@
 use extism_pdk::*;
 use fluentci_pdk::dag;
 
-use crate::helpers::{setup_android_sdk, setup_flutter, setup_jdk};
+use crate::helpers::setup_flutter;
 
 pub mod helpers;
 
 #[plugin_fn]
 pub fn setup() -> FnResult<()> {
-    setup_jdk()?;
-    setup_android_sdk()?;
     setup_flutter()?;
     Ok(())
 }
 
 #[plugin_fn]
 pub fn code_quality() -> FnResult<String> {
-    setup_jdk()?;
-    setup_android_sdk()?;
     setup_flutter()?;
 
     let stdout = dag()
@@ -37,8 +33,6 @@ pub fn code_quality() -> FnResult<String> {
 
 #[plugin_fn]
 pub fn test() -> FnResult<String> {
-    setup_jdk()?;
-    setup_android_sdk()?;
     setup_flutter()?;
 
     let stdout = dag()
@@ -59,8 +53,6 @@ pub fn test() -> FnResult<String> {
 
 #[plugin_fn]
 pub fn build(args: String) -> FnResult<String> {
-    setup_jdk()?;
-    setup_android_sdk()?;
     setup_flutter()?;
 
     let stdout = dag()
