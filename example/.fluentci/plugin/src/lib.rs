@@ -51,8 +51,7 @@ pub fn test() -> FnResult<String> {
         .with_exec(vec![
             r#"
             eval "$(devbox global shellenv --recompute)"
-            lcov --capture --directory . --output-file coverage/lcov.info
-            genhtml coverage/lcov.info --output=coverage"#,
+            lcov --capture --directory . --output-file coverage/lcov.info"#,
         ])?
         .stdout()?;
     Ok(stdout)
