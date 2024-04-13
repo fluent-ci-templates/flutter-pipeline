@@ -21,5 +21,7 @@ jobs:
             build apk --release
           working-directory: example
       - name: Run Dagger Pipelines
-        run: dagger run deno run -A ../src/dagger/runner.ts
+        run: |
+          rm -rf coverage/
+          dagger run deno run -A ../src/dagger/runner.ts
         working-directory: example
