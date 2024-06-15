@@ -1,0 +1,8 @@
+[package]
+authors = [
+  "Tsiry Sandratraina <tsiry.sndr@fluentci.io>",
+]
+description = "CI/CD Plugin for Flutter"
+license = "MIT"
+name = "flutter"
+version = "0.8.0"
