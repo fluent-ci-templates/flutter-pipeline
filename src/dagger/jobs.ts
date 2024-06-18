@@ -82,7 +82,7 @@ export async function test(
     .pipeline(Job.test)
     .container()
     .from(`ghcr.io/cirruslabs/flutter:${FLUTTER_VERSION}`)
-    .withMountedCache("/root/.pub-cache", dag.cacheVolume("pub-cache"))
+    //.withMountedCache("/root/.pub-cache", dag.cacheVolume("pub-cache"))
     .withEnvVariable("PATH", "$PATH:$HOME/.pub-cache/bin", { expand: true })
     .withExec(["flutter", "pub", "global", "activate", "junitreport"])
     .withDirectory("/app", context, {
